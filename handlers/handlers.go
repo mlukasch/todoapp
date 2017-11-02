@@ -18,7 +18,7 @@ func (this *HandlerConfig) Handler(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusNotFound)
 		log.Fatalf("Template %s not found: r.URL.Path %s", tmplName, r.URL.Path)
 	}
-	err := tmpl.ExecuteTemplate(w, tmplName+".html", nil)
+	err := tmpl.ExecuteTemplate(w, tmplName+".gohtml", nil)
 	if err != nil {
 		w.WriteHeader(http.StatusNotFound)
 		w.Write([]byte(err.Error()))
@@ -26,7 +26,7 @@ func (this *HandlerConfig) Handler(w http.ResponseWriter, r *http.Request) {
 }
 
 func getTemplateNameFromUrlPath(urlPath string) string {
-	if urlPath == "/" {
+	if urlPath == "/" || len(urlPath) == 0 {
 		return "home"
 	} else {
 		return urlPath[1:]
