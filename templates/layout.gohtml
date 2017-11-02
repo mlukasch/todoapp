@@ -22,24 +22,29 @@
 <body>
 
     <nav class="navbar navbar-dark navbar-expand bg-dark">
-        <a class="navbar-brand" href="/home">
-            <i class="fa fa-th-list fa-fw" aria-hidden="true"></i>
-            Todo-List
-        </a>
-        <ul class="navbar-nav ml-auto">
-            <li class="nav-item">
-                <a class="nav-link" href="/todo_form">
-                    <i class="fa fa-pencil fa-fw" aria-hidden="true"></i>
-                    Neues Item
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="/about">
-                    <i class="fa fa-copyright fa-fw" aria-hidden="true"></i>
-                    About
-                </a>
-            </li>
-        </ul>
+        <div class="container">
+            <a class="navbar-brand" href="/home">
+                <i class="fa fa-th-list fa-fw" aria-hidden="true"></i>
+                Todo-List
+            </a>
+            <button class="navbar-toggler collapsed" data-toggle="collapse" data-target="#colNav">
+                <i class="fa fa-pencil fa-pulse fa-fw" aria-hidden="true"></i>
+            </button>
+            <ul class="navbar-nav ml-auto collapse navbar-toggeable-sm" id="#colNav">
+                <li class="nav-item">
+                    <a class="nav-link" href="/todo_form">
+                        <i class="fa fa-pencil fa-pulse fa-fw" aria-hidden="true"></i>
+                        Neues Item
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/about">
+                        <i class="fa fa-copyright fa-fw" aria-hidden="true"></i>
+                        About
+                    </a>
+                </li>
+            </ul>
+        </div>
     </nav>
 
     <div class="container-fluid">

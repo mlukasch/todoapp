@@ -11,13 +11,7 @@ import (
 )
 
 func main() {
-	c := loadTemplates()
-	handlerConfig := handlers.HandlerConfig{
-		c,
-	}
-
-	http.Handle("/assets/", http.StripPrefix("/assets/", http.FileServer(http.Dir("public"))))
-	http.HandleFunc("/", handlerConfig.Handler)
+	handlers.Register(loadTemplates())
 	http.ListenAndServe(":8080", nil)
 }
 
