@@ -24,7 +24,11 @@ func loadTemplates() map[string]*template.Template {
 	for _, info := range infos {
 		if info.IsDir() {
 			dirName := info.Name()
-			result[dirName] = template.Must(loadPageTemplates(dirName).ParseGlob("templates/*.gohtml"))
+			tmpl, err := loadPageTemplates(dirName).ParseGlob("templates/*.gohtml")
+			if err != nil {
+				log.Fatal(err)
+			}
+			result[dirName] = tmpl
 		}
 	}
 	for k, v := range result {
@@ -35,6 +39,9 @@ func loadTemplates() map[string]*template.Template {
 }
 
 func loadPageTemplates(dir string) *template.Template {
-	pageTmpl := template.Must(template.ParseGlob(path.Join("templates", dir, "*.gohtml")))
-	return pageTmpl
+	tmpl, err := template.ParseGlob(path.Join("templates", dir, "*.gohtml"))
+	if err != nil {
+		log.Fatal(err)
+	}
+	return tmpl
 }

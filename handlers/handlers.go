@@ -5,6 +5,8 @@ import (
 	"html/template"
 	"log"
 	"net/http"
+
+	"templatetest22/utils"
 )
 
 type HandlerConfig struct {
@@ -15,61 +17,69 @@ func Register(templates map[string]*template.Template) {
 	config := HandlerConfig{
 		templates,
 	}
-	http.Handle("/assets/", http.StripPrefix("/assets/", http.FileServer(http.Dir("public"))))
-	http.HandleFunc("/home", config.HomeHandler)
+
+	http.HandleFunc("/", config.HomeHandler)
 	http.HandleFunc("/about", config.AboutHandler)
 	http.HandleFunc("/todos/new", config.TodoFormHandler)
 	http.HandleFunc("/todos", config.TodoListHandler)
+	http.Handle("/assets/", http.StripPrefix("/assets/", http.FileServer(http.Dir("public"))))
+
 }
 
 func (this *HandlerConfig) HomeHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println("HomeHandler")
-	tmpl := this.templates["home"]
-	err := tmpl.Execute(w, nil)
+	tmpl, ok := this.templates["home"]
+	if !ok {
+		utils.HandleAsNotFound(errors.New("Template not found"), w)
+		return
+	}
+	err := tmpl.ExecuteTemplate(w, "home.gohtml", nil)
 	if err != nil {
-		HandleErrorIfExists(err, w)
+		utils.HandleAsNotFound(err, w)
 	}
 }
 
 func (this *HandlerConfig) AboutHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println("AboutHandler")
-	tmpl := this.templates["about"]
+	tmpl, ok := this.templates["about"]
+	if !ok {
+		utils.HandleAsNotFound(errors.New("Template not found"), w)
+		return
+	}
 	err := tmpl.Execute(w, nil)
 	if err != nil {
-		HandleErrorIfExists(err, w)
+		utils.HandleAsNotFound(err, w)
 	}
 }
 
 func (this *HandlerConfig) TodoFormHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println("TodoFormHandler")
-	tmpl := this.templates["todo_form"]
-	err := tmpl.Execute(w, nil)
+	tmpl, ok := this.templates["todo_form"]
+	if !ok {
+		utils.HandleAsNotFound(errors.New("Template not found"), w)
+		return
+	}
+	err := tmpl.ExecuteTemplate(w, "todo_form.gohtml", nil)
 	if err != nil {
-		HandleErrorIfExists(err, w)
+		utils.HandleAsNotFound(err, w)
 	}
 }
 
 func (this *HandlerConfig) TodoListHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println("TodoListHandler")
-	tmpl := this.templates["todo_list"]
-	err := tmpl.Execute(w, nil)
+	tmpl, ok := this.templates["todo_list"]
+	if !ok {
+		utils.HandleAsNotFound(errors.New("Template not found"), w)
+		return
+	}
+	err := tmpl.ExecuteTemplate(w, "todo_list.gohtml", nil)
 	if err != nil {
-		HandleErrorIfExists(err, w)
+		utils.HandleAsNotFound(err, w)
 	}
 }
 
-func (this *HandlerConfig) Handler(w http.ResponseWriter, r *http.Request) {
-	log.Println("Handler")
-	tmplName := getTemplateNameFromUrlPath(r.URL.Path)
-	tmpl, ok := this.templates[tmplName]
-	if !ok {
-		HandleErrorIfExists(errors.New("Template not found"), w)
-		return
-	}
-	err := tmpl.Execute(w, nil)
-	if err != nil {
-		HandleErrorIfExists(err, w)
-	}
+func (this *HandlerConfig) ErrorHandler(w http.ResponseWriter, r *http.Request) {
+	utils.HandleAsNotFound(errors.New("Resource not found"), w)
 }
 
 func getTemplateNameFromUrlPath(urlPath string) string {
@@ -78,10 +88,4 @@ func getTemplateNameFromUrlPath(urlPath string) string {
 	} else {
 		return urlPath[1:]
 	}
-}
-
-func HandleErrorIfExists(err error, w http.ResponseWriter) {
-	w.WriteHeader(http.StatusNotFound)
-	w.Write([]byte(err.Error()))
-	log.Printf("Error : %s", err.Error())
 }
