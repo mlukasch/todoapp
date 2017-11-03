@@ -8,4 +8,7 @@ body {
 
 form {
     background-color: #ecf0f1;
+    padding: 2em;
+    width: 50em;
+    margin-top: 5em;
 }

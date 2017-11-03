@@ -23,7 +23,6 @@ func Register(templates map[string]*template.Template) {
 	http.HandleFunc("/todos/new", config.TodoFormHandler)
 	http.HandleFunc("/todos", config.TodoListHandler)
 	http.Handle("/assets/", http.StripPrefix("/assets/", http.FileServer(http.Dir("public"))))
-
 }
 
 func (this *HandlerConfig) HomeHandler(w http.ResponseWriter, r *http.Request) {
