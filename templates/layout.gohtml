@@ -15,26 +15,32 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ"
         crossorigin="anonymous"></script>
     <link rel="stylesheet" href="/assets/fa/css/font-awesome.min.css">
-
+    <link href="https://fonts.googleapis.com/css?family=Pacifico" rel="stylesheet">
     <title>Todo-List</title>
 </head>
 
 <body>
 
-    <nav class="navbar navbar-dark navbar-expand bg-dark">
-        <div class="container">
-            <a class="navbar-brand" href="/home">
-                <i class="fa fa-th-list fa-fw" aria-hidden="true"></i>
-                Todo-List
-            </a>
-            <button class="navbar-toggler collapsed" data-toggle="collapse" data-target="#colNav">
-                <i class="fa fa-pencil fa-pulse fa-fw" aria-hidden="true"></i>
-            </button>
-            <ul class="navbar-nav ml-auto collapse navbar-toggeable-sm" id="#colNav">
+    <nav class="navbar navbar-dark navbar-expand-sm bg-primary lead">
+        <a class="navbar-brand" href="/home">
+            Todo-List
+        </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#colNav">
+            <i class="fa fa-bars" aria-hidden="true"></i>
+        </button>
+
+        <div class="collapse navbar-collapse" id="colNav">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="/todos/new">
+                        <i class="fa fa-th-list fa-fw" aria-hidden="true"></i>
+                        Lists
+                    </a>
+                </li>
                 <li class="nav-item">
                     <a class="nav-link" href="/todos/new">
                         <i class="fa fa-pencil fa-pulse fa-fw" aria-hidden="true"></i>
-                        Neues Item
+                        New Item
                     </a>
                 </li>
                 <li class="nav-item">

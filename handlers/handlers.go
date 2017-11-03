@@ -28,11 +28,15 @@ func Register(templates map[string]*template.Template) {
 
 func (this *HandlerConfig) HomeHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println("HomeHandler")
-	tmpl, ok := this.templates["home"]
-	if !ok {
-		utils.HandleAsNotFound(errors.New("Template not found"), w)
-		return
+	if r.Method == http.MethodPost {
+		log.Println("HomeHandler Post")
+		userName := r.FormValue("userName")
+		email := r.FormValue("email")
+		log.Println(userName)
+		log.Println(email)
 	}
+
+	tmpl := this.templates["home"]
 	err := tmpl.ExecuteTemplate(w, "home.gohtml", nil)
 	if err != nil {
 		utils.HandleAsNotFound(err, w)

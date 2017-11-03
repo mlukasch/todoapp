@@ -1,9 +1,22 @@
 {{ define "content" }}
-    <div class="row" style="background-color: green">
-        <div class="col-sm-4">Todo-Listen</div>
-        <div class="col-sm-4">Full-Featured Todo-List</div>
-        <div class="col-sm-4">Create Todo-Items</div>
+<form action="/" method="post" class="rounded border-primary">
+    <div class="container">
+        <div class="form-group row">
+            <label class="col-sm-4" for="userName">Your Name</label>
+            <input name="userName" class="col-sm-7" type="text" class="form-control" id="userName" placeholder="UserName">
+        </div>
+        <div class="form-group row">
+            <label class="col-sm-4" for="email">Your Email</label>
+            <input name="email" class="col-sm-7" type="email" class="form-control" id="email" placeholder="Email">
+        </div>
+        <div class="row">
+            <div class="col-sm-4"></div>
+            <div class="col-sm-7 p-0">
+                <button type="submit" class="btn btn-outline-primary btn-lg">Login</button>
+            </div>
+        </div>
     </div>
+</form>
 {{ end }} 
 
 {{ template "layout.gohtml" }}
