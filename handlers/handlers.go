@@ -31,6 +31,7 @@ func (this *HandlerConfig) HomeHandler(w http.ResponseWriter, r *http.Request) {
 		log.Println("HomeHandler Post")
 		userName := r.FormValue("userName")
 		email := r.FormValue("email")
+		// TODO add validation
 		log.Println(userName)
 		log.Println(email)
 	}
