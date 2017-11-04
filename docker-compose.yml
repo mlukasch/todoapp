@@ -1,0 +1,27 @@
+version: '3'
+services:
+  web:
+    build: '.'
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: test
+      POSTGRES_DB: todo
+      POSTGRES_HOST: db
+    volumes:
+      - ./:/go//src/templatetest22      
+    ports:
+      - 8080:8080
+    links:
+      - db
+  db:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: test
+      POSTGRES_DB: todo
+    ports:
+      - 5432:5432
+    volumes:
+      - ./sql/:/docker-entrypoint-initdb.d/

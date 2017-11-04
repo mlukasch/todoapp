@@ -1,28 +1,50 @@
 package handlers
 
 import (
+	"database/sql"
 	"errors"
 	"html/template"
 	"log"
 	"net/http"
 
+	"templatetest22/db"
 	"templatetest22/utils"
 )
 
 type HandlerConfig struct {
 	templates map[string]*template.Template
+	db        *sql.DB
 }
 
-func Register(templates map[string]*template.Template) {
+func Register(templates map[string]*template.Template, db *sql.DB) {
 	config := HandlerConfig{
 		templates,
+		db,
 	}
 
 	http.HandleFunc("/", config.HomeHandler)
+	http.HandleFunc("/register", config.RegisterHandler)
 	http.HandleFunc("/about", config.AboutHandler)
 	http.HandleFunc("/todos/new", config.TodoFormHandler)
 	http.HandleFunc("/todos", config.TodoListHandler)
 	http.Handle("/assets/", http.StripPrefix("/assets/", http.FileServer(http.Dir("public"))))
+}
+
+func (this *HandlerConfig) RegisterHandler(w http.ResponseWriter, r *http.Request) {
+	log.Println("RegisterHandler")
+	if r.Method == http.MethodPost {
+
+		todoUser := db.TodoUser{
+			FirstName: r.FormValue("firstName"),
+			LastName:  r.FormValue("lastName"),
+			Email:     r.FormValue("email"),
+			Password:  r.FormValue("password"),
+		}
+		err := db.InsertTodoUser(this.db, &todoUser)
+		if err != nil {
+			log.Println(err.Error())
+		}
+	}
 }
 
 func (this *HandlerConfig) HomeHandler(w http.ResponseWriter, r *http.Request) {

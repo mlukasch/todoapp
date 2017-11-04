@@ -34,15 +34,26 @@ form {
     padding: 2em;
     max-width: 100%;
     width: 50em;
-    margin-top: 5em;
+    margin-top: 10em;
     border-radius: 1em;
     border-width: 3px;
     border-style: solid;
     border-color: #3498db;
-    box-shadow: 0px 0px 50px #f1c40f;
     color: #2c3e50;
+}
+
+form:hover{
+    box-shadow: 0px 0px 50px #f1c40f;
+    border-color: black;
 }
 
 .content .col, .row {
     max-width: 100%;
+}
+
+#timebox {
+    color: white !important;
+    text-shadow: 1px 1px 2px rgb(0, 0, 0), 0 0 25px #f1c40f, 0 0 5px #f1c40f;
+    font-size: 30px;
+    font-family: 'Share Tech Mono', monospace;
 }
