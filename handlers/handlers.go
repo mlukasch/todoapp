@@ -41,8 +41,13 @@ func (this *HandlerConfig) RegisterHandler(w http.ResponseWriter, r *http.Reques
 			Password:  r.FormValue("password"),
 		}
 		err := db.InsertTodoUser(this.db, &todoUser)
+		successful := (err != nil)
+		tmpl := this.templates["home"]
+		err = tmpl.ExecuteTemplate(w, "home.gohtml", struct{ Registered bool }{
+			successful,
+		})
 		if err != nil {
-			log.Println(err.Error())
+			utils.HandleAsNotFound(err, w)
 		}
 	}
 }

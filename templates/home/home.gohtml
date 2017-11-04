@@ -4,6 +4,25 @@
         <div id="timebox" class="p-5 text-secondary sticky-top">12:13:33</div>
     </div>
 </div>
+
+{{ if .Registered }}
+<div class="alert alert-success alert-dismissible fade show position-absolute" style="top:16em">
+    <strong>Successfully registered.</strong>
+</div>
+{{ end }}
+
+{{ if not . }}
+{{ else if not .Registered }}
+<div class="alert alert-danger alert-dismissible fade show position-absolute" style="top:16em">
+    <strong>Registration failed.</strong>
+</div>
+{{ else if .Registered }}
+<div class="alert alert-success alert-dismissible fade show position-absolute" style="top:16em">
+    <strong>Registration successful.</strong>
+</div>
+{{ end }}
+
+
 <div class="row">
     <div class="col">
         <form action="/" method="post">
@@ -33,7 +52,7 @@
     </div>
 </div>
 
-<div id="register" class="modal fade">
+<div id="register" class="modal show">
     <div class="modal-dialog">
         <form class="modal-content" method="POST" action="/register">
             <div class="modal-title">
@@ -68,10 +87,10 @@
                 </div>                
                 <div class="form-group row">
                     <div class="col-sm-4">
-                        <label for="password">Password:</label>
+                        <label for="password-field">Password:</label>
                     </div>
                     <div class="col-sm-8">
-                        <input class="form-control" name="password" type="password" id="password"/>
+                        <input class="form-control" readonly onfocus="this.removeAttribute('readonly');" autocomplete="off" name="password" type="password" required id="password-field" />
                     </div>
                 </div>                
             </div>
@@ -84,4 +103,4 @@
 </div>
 {{ end }} 
 
-{{ template "layout.gohtml" }}
+{{ template "layout.gohtml" . }}
