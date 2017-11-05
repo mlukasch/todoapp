@@ -23,46 +23,43 @@ func Register(templates map[string]*template.Template, db *sql.DB) {
 	}
 
 	http.HandleFunc("/", config.HomeHandler)
-	http.HandleFunc("/register", config.RegisterHandler)
 	http.HandleFunc("/about", config.AboutHandler)
 	http.HandleFunc("/todos/new", config.TodoFormHandler)
+	http.HandleFunc("/user/new", config.UserNew)
 	http.HandleFunc("/todos", config.TodoListHandler)
 	http.Handle("/assets/", http.StripPrefix("/assets/", http.FileServer(http.Dir("public"))))
 }
 
-func (this *HandlerConfig) RegisterHandler(w http.ResponseWriter, r *http.Request) {
-	log.Println("RegisterHandler")
-	if r.Method == http.MethodPost {
-
-		todoUser := db.TodoUser{
-			FirstName: r.FormValue("firstName"),
-			LastName:  r.FormValue("lastName"),
-			Email:     r.FormValue("email"),
-			Password:  r.FormValue("password"),
-		}
-		err := db.InsertTodoUser(this.db, &todoUser)
-		successful := (err != nil)
-		tmpl := this.templates["home"]
-		err = tmpl.ExecuteTemplate(w, "home.gohtml", struct{ Registered bool }{
-			successful,
-		})
-		if err != nil {
-			utils.HandleAsNotFound(err, w)
-		}
+func (this *HandlerConfig) UserNew(w http.ResponseWriter, r *http.Request) {
+	todoUser := db.TodoUser{
+		FirstName: r.FormValue("firstName"),
+		LastName:  r.FormValue("lastName"),
+		Email:     r.FormValue("email"),
+		Password:  r.FormValue("password"),
+	}
+	_, err := db.InsertTodoUser(this.db, &todoUser)
+	if err != nil {
+		log.Println(err)
+	}
+	//successful := (err == nil)
+	tmpl := this.templates["home"]
+	err = tmpl.ExecuteTemplate(w, "home.gohtml", struct{ Registered bool }{
+		true,
+	})
+	if err != nil {
+		utils.HandleAsNotFound(err, w)
 	}
 }
 
 func (this *HandlerConfig) HomeHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println("HomeHandler")
-	if r.Method == http.MethodPost {
-		log.Println("HomeHandler Post")
-		userName := r.FormValue("userName")
-		email := r.FormValue("email")
-		// TODO add validation
-		log.Println(userName)
-		log.Println(email)
-	}
 
+	log.Println("HomeHandler Post")
+	userName := r.FormValue("userName")
+	email := r.FormValue("email")
+	// TODO add validation
+	log.Println(userName)
+	log.Println(email)
 	tmpl := this.templates["home"]
 	err := tmpl.ExecuteTemplate(w, "home.gohtml", nil)
 	if err != nil {

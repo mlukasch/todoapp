@@ -5,12 +5,6 @@
     </div>
 </div>
 
-{{ if .Registered }}
-<div class="alert alert-success alert-dismissible fade show position-absolute" style="top:16em">
-    <strong>Successfully registered.</strong>
-</div>
-{{ end }}
-
 {{ if not . }}
 {{ else if not .Registered }}
 <div class="alert alert-danger alert-dismissible fade show position-absolute" style="top:16em">
@@ -54,7 +48,7 @@
 
 <div id="register" class="modal show">
     <div class="modal-dialog">
-        <form class="modal-content" method="POST" action="/register">
+        <form class="modal-content" method="POST" action="/user/new">
             <div class="modal-title">
                 <div class="container d-flex justify-content-center p-5">
                     <h1>Registration for Todo-List</h1>
