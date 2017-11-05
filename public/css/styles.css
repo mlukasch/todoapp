@@ -51,6 +51,10 @@ form:hover{
     max-width: 100%;
 }
 
+.alert {
+    z-index: 10;
+}
+
 #timebox {
     color: white !important;
     text-shadow: 1px 1px 2px rgb(0, 0, 0), 0 0 25px #f1c40f, 0 0 5px #f1c40f;

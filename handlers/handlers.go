@@ -3,12 +3,14 @@ package handlers
 import (
 	"database/sql"
 	"errors"
+	"html"
 	"html/template"
 	"log"
 	"net/http"
 
 	"templatetest22/db"
 	"templatetest22/utils"
+	"templatetest22/validators"
 )
 
 type HandlerConfig struct {
@@ -31,10 +33,31 @@ func Register(templates map[string]*template.Template, db *sql.DB) {
 }
 
 func (this *HandlerConfig) UserNew(w http.ResponseWriter, r *http.Request) {
+	tmpl := this.templates["home"]
+
+	// Validation:
+	validator := validators.NewForm()
+	validator.AddField("firstName", r.FormValue("firstName")).Add(validators.NotEmptyValidator)
+	validator.AddField("lastName", r.FormValue("lastName")).Add(validators.NotEmptyValidator)
+	validator.AddField("email", r.FormValue("email")).Add(validators.NotEmptyValidator)
+	validator.AddField("password", r.FormValue("password")).Add(validators.NotEmptyValidator)
+	ok, errors := validator.Execute()
+
+	if len(errors) > 0 {
+		tmpl.ExecuteTemplate(w, "home.gohtml", struct {
+			HasErrors bool
+			Errors    map[string][]error
+		}{
+			!ok,
+			errors,
+		})
+		return
+	}
+
 	todoUser := db.TodoUser{
-		FirstName: r.FormValue("firstName"),
-		LastName:  r.FormValue("lastName"),
-		Email:     r.FormValue("email"),
+		FirstName: html.EscapeString(r.FormValue("firstName")),
+		LastName:  html.EscapeString(r.FormValue("lastName")),
+		Email:     html.EscapeString(r.FormValue("email")),
 		Password:  r.FormValue("password"),
 	}
 	_, err := db.InsertTodoUser(this.db, &todoUser)
@@ -42,9 +65,13 @@ func (this *HandlerConfig) UserNew(w http.ResponseWriter, r *http.Request) {
 		log.Println(err)
 	}
 	//successful := (err == nil)
-	tmpl := this.templates["home"]
-	err = tmpl.ExecuteTemplate(w, "home.gohtml", struct{ Registered bool }{
+
+	err = tmpl.ExecuteTemplate(w, "home.gohtml", struct {
+		Registered bool
+		FirstName  string
+	}{
 		true,
+		todoUser.FirstName,
 	})
 	if err != nil {
 		utils.HandleAsNotFound(err, w)

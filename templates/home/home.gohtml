@@ -6,13 +6,21 @@
 </div>
 
 {{ if not . }}
-{{ else if not .Registered }}
+{{ else if .HasErrors }}
 <div class="alert alert-danger alert-dismissible fade show position-absolute" style="top:16em">
     <strong>Registration failed.</strong>
+    <ul>
+        {{ range $fieldName, $err := .Errors }}
+            {{ range $error := $err }}
+                <li>{{ $fieldName  }} : {{ $error }}</li>
+            {{ end }}
+        {{ end }}
+    </ul>
 </div>
-{{ else if .Registered }}
+{{ else }}
 <div class="alert alert-success alert-dismissible fade show position-absolute" style="top:16em">
     <strong>Registration successful.</strong>
+    {{.FirstName}}
 </div>
 {{ end }}
 
