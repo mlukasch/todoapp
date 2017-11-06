@@ -3,6 +3,7 @@ package handlers
 import (
 	"database/sql"
 	"errors"
+	"fmt"
 	"html"
 	"html/template"
 	"log"
@@ -24,16 +25,22 @@ func Register(templates map[string]*template.Template, db *sql.DB) {
 		db,
 	}
 
-	http.HandleFunc("/", config.HomeHandler)
 	http.HandleFunc("/about", config.AboutHandler)
 	http.HandleFunc("/todos/new", config.TodoFormHandler)
 	http.HandleFunc("/user/new", config.UserNew)
 	http.HandleFunc("/todos", config.TodoListHandler)
 	http.Handle("/assets/", http.StripPrefix("/assets/", http.FileServer(http.Dir("public"))))
+	http.HandleFunc("/", config.HomeHandler)
 }
 
 func (this *HandlerConfig) UserNew(w http.ResponseWriter, r *http.Request) {
-	tmpl := this.templates["home"]
+	fmt.Println("UserNew")
+	err := r.ParseMultipartForm(10000000)
+	if err != nil {
+		fmt.Println("error parsing form")
+		utils.HandleAsNotFound(err, w)
+		return
+	}
 
 	// Validation:
 	validator := validators.NewForm()
@@ -41,16 +48,13 @@ func (this *HandlerConfig) UserNew(w http.ResponseWriter, r *http.Request) {
 	validator.AddField("lastName", r.FormValue("lastName")).Add(validators.NotEmptyValidator)
 	validator.AddField("email", r.FormValue("email")).Add(validators.NotEmptyValidator)
 	validator.AddField("password", r.FormValue("password")).Add(validators.NotEmptyValidator)
-	ok, errors := validator.Execute()
+	ok, errs := validator.Execute()
+	response := make(map[string]interface{})
+	response["errors"] = errs
+	response["ok"] = ok
 
-	if len(errors) > 0 {
-		tmpl.ExecuteTemplate(w, "home.gohtml", struct {
-			HasErrors bool
-			Errors    map[string][]error
-		}{
-			!ok,
-			errors,
-		})
+	if !ok {
+		utils.HandleJsonResponse(response, w)
 		return
 	}
 
@@ -60,22 +64,13 @@ func (this *HandlerConfig) UserNew(w http.ResponseWriter, r *http.Request) {
 		Email:     html.EscapeString(r.FormValue("email")),
 		Password:  r.FormValue("password"),
 	}
-	_, err := db.InsertTodoUser(this.db, &todoUser)
+	_, err = db.InsertTodoUser(this.db, &todoUser)
 	if err != nil {
-		log.Println(err)
+		response["errors"] = errors.New("DB Operation failed")
+		utils.HandleJsonResponse(response, w)
+		return
 	}
-	//successful := (err == nil)
-
-	err = tmpl.ExecuteTemplate(w, "home.gohtml", struct {
-		Registered bool
-		FirstName  string
-	}{
-		true,
-		todoUser.FirstName,
-	})
-	if err != nil {
-		utils.HandleAsNotFound(err, w)
-	}
+	utils.HandleJsonResponse(response, w)
 }
 
 func (this *HandlerConfig) HomeHandler(w http.ResponseWriter, r *http.Request) {

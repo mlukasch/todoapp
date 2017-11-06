@@ -5,5 +5,11 @@
     },
     "plugins": [
         "import"
-    ]
+    ],
+    "ecmaFeatures": {
+        "forOf": true
+    },
+    "rules": {
+        "no-restricted-syntax": "off"
+    }
 }

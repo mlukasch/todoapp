@@ -56,7 +56,7 @@
 
 <div id="register" class="modal show">
     <div class="modal-dialog">
-        <form class="modal-content" method="POST" action="/user/new">
+        <form class="modal-content" id="registerForm">
             <div class="modal-title">
                 <div class="container d-flex justify-content-center p-5">
                     <h1>Registration for Todo-List</h1>
@@ -98,7 +98,7 @@
             </div>
             <div class="modal-footer">
                 <button class="btn btn-outline-primary btn-lg" type="button" data-target="#register" data-toggle="modal">Cancel</button>
-                <button class="btn btn-primary btn-lg" type="submit">Register</button>
+                <button class="btn btn-primary btn-lg" type="button" onClick="sendRegisterForm()">Register</button>
             </div>
         </form>
     </div>
