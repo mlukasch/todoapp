@@ -49,9 +49,10 @@ func (this *HandlerConfig) UserNew(w http.ResponseWriter, r *http.Request) {
 	validator.AddField("email", r.FormValue("email")).Add(validators.NotEmptyValidator)
 	validator.AddField("password", r.FormValue("password")).Add(validators.NotEmptyValidator)
 	ok, errs := validator.Execute()
-	response := make(map[string]interface{})
-	response["errors"] = errs
-	response["ok"] = ok
+	response := map[string]interface{}{
+		"errors": errs,
+		"ok":     ok,
+	}
 
 	if !ok {
 		utils.HandleJsonResponse(response, w)
@@ -66,6 +67,7 @@ func (this *HandlerConfig) UserNew(w http.ResponseWriter, r *http.Request) {
 	}
 	_, err = db.InsertTodoUser(this.db, &todoUser)
 	if err != nil {
+		response["ok"] = false
 		response["errors"] = errors.New("DB Operation failed")
 		utils.HandleJsonResponse(response, w)
 		return
